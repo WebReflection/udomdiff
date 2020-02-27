@@ -1,6 +1,6 @@
 # µdomdiff
 
-[![Coverage Status](https://coveralls.io/repos/github/WebReflection/udomdiff/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/udomdiff?branch=master) [![Build Status](https://travis-ci.org/WebReflection/udomdiff.svg?branch=master)](https://travis-ci.org/WebReflection/udomdiff) [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC)
+[![Build Status](https://travis-ci.com/WebReflection/udomdiff.svg?branch=master)](https://travis-ci.com/WebReflection/udomdiff) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/udomdiff/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/udomdiff?branch=master)
 
 An essential version of [domdiff](https://github.com/WebReflection/domdiff#readme) for [µhtml](https://github.com/WebReflection/uhtml#readme).
 
