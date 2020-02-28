@@ -1227,6 +1227,16 @@ newState = domdiff(
 );
 console.timeEnd('reversed');
 
+const swapRows = newState.slice();
+swapRows[1] = swapRows[998];
+console.time('js-frameworks-benchmark');
+newState = domdiff(
+  document.body,
+  newState,
+  swapRows
+);
+console.timeEnd('js-frameworks-benchmark');
+
 document.body.selectedIndex = -1;
 newState = domdiff(
   document.body,
