@@ -1,5 +1,5 @@
 'use strict';
-const {HS, applyDiff, append, remove, next} = require('./utils.js');
+const {HS, applyDiff, append, remove} = require('./utils.js');
 
 module.exports = (
   parentNode,
@@ -50,7 +50,7 @@ module.exports = (
       futureNodes,
       futureStart,
       futureEnd,
-      next(get, currentNodes, currentStart, currentLength, before)
+      before
     );
     return futureNodes;
   }

@@ -156,12 +156,6 @@ export const append = (get, parent, children, start, end, before) => {
 
 const drop = node => (node.remove || dropChild).call(node);
 
-export const next = (get, list, i, length, before) => i < length ?
-              get(list[i], 0) :
-              (0 < i ?
-                get(list[i - 1], -0).nextSibling :
-                before);
-
 export const remove = (get, children, start, end) => {
   while (start < end)
     drop(get(children[start++], -1));

@@ -1,4 +1,4 @@
-import {HS, applyDiff, append, remove, next} from './utils.js';
+import {HS, applyDiff, append, remove} from './utils.js';
 
 export default (
   parentNode,
@@ -49,7 +49,7 @@ export default (
       futureNodes,
       futureStart,
       futureEnd,
-      next(get, currentNodes, currentStart, currentLength, before)
+      before
     );
     return futureNodes;
   }

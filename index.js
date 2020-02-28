@@ -143,9 +143,6 @@ var udomdiff = (function (exports) {
     return (node.remove || dropChild).call(node);
   };
 
-  var next = function next(get, list, i, length, before) {
-    return i < length ? get(list[i], 0) : 0 < i ? get(list[i - 1], -0).nextSibling : before;
-  };
   var remove = function remove(get, children, start, end) {
     while (start < end) {
       drop(get(children[start++], -1));
@@ -195,7 +192,7 @@ var udomdiff = (function (exports) {
     if (currentSame && futureSame) return futureNodes; // only stuff to add
 
     if (currentSame && futureStart < futureEnd) {
-      append(get, parentNode, futureNodes, futureStart, futureEnd, next(get, currentNodes, currentStart, currentLength, before));
+      append(get, parentNode, futureNodes, futureStart, futureEnd, before);
       return futureNodes;
     } // only stuff to remove
 
