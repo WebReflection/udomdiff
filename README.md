@@ -4,6 +4,7 @@
 
 An essential diffing algorithm for [µhtml](https://github.com/WebReflection/uhtml#readme).
 
+
 ### Signature
 
 ```js
@@ -15,6 +16,18 @@ futureNodes = udomdiff(
   before          // the anchored node to insertBefore
 );
 ```
+
+### What is `get` and how does it work?
+
+You can find all info from [domdiff](https://github.com/WebReflection/domdiff#a-node-generic-info--node-callback-for-complex-data), as it's exactly the same concept:
+
+  * `get(node, 1)` to retrieve the node that's being appended
+  * `get(node, 0)` to get the node to use as `insertBefore`
+  * `get(node, -0)` to get the node to use as `nextSibling`
+  * `get(node, -1)` to retrieve the node that's being removed
+
+If you don't care about any of those second arguments values, `const get = o => o;` is a valid get too.
+
 
 ### How to import it:
 
