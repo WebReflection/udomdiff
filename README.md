@@ -2,16 +2,7 @@
 
 [![Build Status](https://travis-ci.com/WebReflection/udomdiff.svg?branch=master)](https://travis-ci.com/WebReflection/udomdiff) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/udomdiff/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/udomdiff?branch=master)
 
-An essential version of [domdiff](https://github.com/WebReflection/domdiff#readme) for [µhtml](https://github.com/WebReflection/uhtml#readme).
-
-#### Diffing Strategies:
-
-  * common prefixes
-  * common suffixes
-  * skip same lists
-  * add boundaries
-  * remove boundaries
-  * last fallback with a simplified Hunt Szymanski algorithm
+An essential diffing algorithm for [µhtml](https://github.com/WebReflection/uhtml#readme).
 
 ### Signature
 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="../index.js"></script>
+  <script>
+  this.onload = function () {
+    var select = test.appendChild(document.createElement('select'));
+    var options = [
+      document.createElement('option'),
+      document.createElement('option'),
+      document.createElement('option'),
+      document.createElement('option')
+    ];
+    options.forEach(setup);
+    setup(options[0], 0, true, false);
+    setup(options[1], 1, false, true);
+    setup(options[2], 2, false, false);
+    setup(options[3], 3, false, false);
+    options = udomdiff(
+      select,
+      [].slice.call(select.children),
+      options,
+      Object
+    );
+    setInterval(function () {
+      options.sort(function () { return Math.random() - Math.random() });
+      console.log('changing');
+      options = udomdiff(
+        select,
+        [].slice.call(select.children),
+        options,
+        Object
+      );
+    }, 5000);
+  };
+  function setup(option, i) {
+    option.textContent = option.value = i;
+    option.disabled = i === 0;
+    option.selected = i === 1;
+  }
+  </script>
+</head>
+<body>
+  <div id="test"></div>
+  <hr>
+  <p>html</p>
+  <select>
+    <option value="0" disabled>0</option>
+    <option value="1" selected>1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+  </select>
+</body>
+</html>
