@@ -114,7 +114,7 @@ export default (parentNode, a, b, get, before) => {
         else
           aStart++;
       }
-      // otherwise drop node
+      // otherwise drop the node and move the source forward
       else
         parentNode.removeChild(get(a[aStart++], -1));
     }
