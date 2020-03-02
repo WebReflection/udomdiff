@@ -127,7 +127,7 @@ module.exports = (parentNode, a, b, get, before) => {
           let i = aStart;
           // counts the amount of nodes that are the same in the future
           let sequence = 1;
-          while (++i < aEnd) {
+          while (++i < aEnd && i < bEnd) {
             if (!map.has(a[i]) || map.get(a[i]) !== (index + sequence))
               break;
             sequence++;

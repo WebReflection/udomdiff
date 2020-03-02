@@ -117,7 +117,7 @@ var udomdiff = (function (exports) {
 
                         var sequence = 1;
 
-                        while (++_i < aEnd) {
+                        while (++_i < aEnd && _i < bEnd) {
                           if (!map.has(a[_i]) || map.get(a[_i]) !== index + sequence) break;
                           sequence++;
                         } // effort decision here: if the sequence is longer than replaces
