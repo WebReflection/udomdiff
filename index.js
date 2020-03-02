@@ -18,6 +18,16 @@ var udomdiff = (function (exports) {
    * OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
    * PERFORMANCE OF THIS SOFTWARE.
    */
+
+  /**
+   * @param {Node} parentNode The container where children live
+   * @param {Node[]} a The list of current/live children
+   * @param {Node[]} b The list of future children
+   * @param {(entry: Node, action: number) => Node} get
+   * The callback invoked per each entry related DOM operation.
+   * @param {Node} [before] The optional node used as anchor to insert before.
+   * @returns {Node[]} The same list of future children.
+   */
   var index = (function (parentNode, a, b, get, before) {
     var bLength = b.length;
     var aEnd = a.length;

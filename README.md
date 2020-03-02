@@ -11,11 +11,11 @@ An essential diffing algorithm for [µhtml](https://github.com/WebReflection/uht
 
 ```js
 futureNodes = udomdiff(
-  parentNode,     // where changes happen
-  currentNodes,   // Array of current items/nodes
-  futureNodes,    // Array of future items/nodes (returned)
-  get,            // a callback to retrieve the node
-  before          // the anchored node to insertBefore
+  parentNode,           // where changes happen
+  [...currentNodes],    // Array of current items/nodes
+  [...futureNodes],     // Array of future items/nodes (returned)
+  get(node, toDoWhat),  // a callback to retrieve the node
+  before                // the anchored node to insertBefore
 );
 ```
 
@@ -24,8 +24,8 @@ futureNodes = udomdiff(
 You can find all info from [domdiff](https://github.com/WebReflection/domdiff#a-node-generic-info--node-callback-for-complex-data), as it's exactly the same concept:
 
   * `get(node, 1)` to retrieve the node that's being appended
-  * `get(node, 0)` to get the node to use as `insertBefore`
-  * `get(node, -0)` to get the node to use as `nextSibling`
+  * `get(node, 0)` to get the node to use for an `insertBefore` operation
+  * `get(node, -0)` to get the node to use for an `insertAfter` operation
   * `get(node, -1)` to retrieve the node that's being removed
 
 If you don't care about any of those second arguments values, `const get = o => o;` is a valid get too.
