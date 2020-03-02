@@ -54,8 +54,7 @@ module.exports = (parentNode, a, b, get, before) => {
       if (bMap && bMap.has(a[aStart])) {
         parentNode.insertBefore(
           get(b[bStart], 1),
-          get(bEnd < bLength ?
-            /* istanbul ignore next */ b[bEnd] : before, 0)
+          get(bEnd < bLength ? b[bEnd] : before, 0)
         );
       }
       else
@@ -115,7 +114,7 @@ module.exports = (parentNode, a, b, get, before) => {
         else
           aStart++;
       }
-      // otherwise drop node
+      // otherwise drop the node and move the source forward
       else
         parentNode.removeChild(get(a[aStart++], -1));
     }

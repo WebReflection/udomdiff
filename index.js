@@ -50,9 +50,7 @@ var udomdiff = (function (exports) {
             } // single swap
             else if (aEnd - aStart === 1 && bEnd - bStart === 1) {
                 if (bMap && bMap.has(a[aStart])) {
-                  parentNode.insertBefore(get(b[bStart], 1), get(bEnd < bLength ?
-                  /* istanbul ignore next */
-                  b[bEnd] : before, 0));
+                  parentNode.insertBefore(get(b[bStart], 1), get(bEnd < bLength ? b[bEnd] : before, 0));
                 } else parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));
 
                 aStart++;
@@ -101,7 +99,7 @@ var udomdiff = (function (exports) {
                           }
                       } // otherwise move the source forward
                       else aStart++;
-                    } // otherwise drop node
+                    } // otherwise drop the node and move the source forward
                     else parentNode.removeChild(get(a[aStart++], -1));
                   }
     }

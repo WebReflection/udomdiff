@@ -59,7 +59,8 @@ function test() {
   diff('dabcf');
   diff('ade');
   diff('df');
-  diff('dk');
+  diff('bdck');
+  diff('ckbd');
   diff('');
   console.assert(
     /^hr$/i.test(document.body.lastElementChild.tagName),
