@@ -12,6 +12,7 @@ global.document = {
       }}
     );
   },
+  importNode: function () {},
   body: {
     get lastElementChild() {
       return this.childNodes[this.childNodes.length - 1];
