@@ -1,7 +1,7 @@
 {
   "name": "udomdiff",
   "version": "1.0.2",
-  "description": "An essential version of domdiff for µhtml",
+  "description": "An essential diffing algorithm for µhtml",
   "main": "cjs/index.js",
   "scripts": {
     "build": "npm run cjs && npm run rollup:new && npm run rollup:babel && npm run min && npm run fix:default && npm run test && npm run size",
