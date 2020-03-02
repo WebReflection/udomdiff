@@ -16,6 +16,8 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
+import {drop} from './util'
+
 /**
  * @param {Node} parentNode The container where children live
  * @param {Node[]} a The list of current/live children
@@ -56,7 +58,8 @@ export default (parentNode, a, b, get, before) => {
     // remove head or tail: fast path
     else if (bEnd === bStart) {
       while (aStart < aEnd)
-        parentNode.removeChild(get(a[aStart++], -1));
+        drop(get(a[aStart++], -1));
+
     }
     // single last swap: fast path
     else if ((aEnd - aStart) === 1 && (bEnd - bStart) === 1) {
@@ -161,7 +164,7 @@ export default (parentNode, a, b, get, before) => {
       // to remove it, and check the next live node out instead, meaning
       // that only the live list index should be forwarded
       else
-        parentNode.removeChild(get(a[aStart++], -1));
+        drop(get(a[aStart++], -1));
     }
   }
   return b;
