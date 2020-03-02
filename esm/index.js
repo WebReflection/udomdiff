@@ -76,9 +76,8 @@ export default (parentNode, a, b, get, before) => {
       // if the node is unknown, just replace it with the new one
       else
         parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));
-      // move both indexes forward to finish the loop in the fast path
-      aStart++;
-      bStart++;
+      // break the loop, as this was the very last operation to perform
+      break;
     }
     // reverse swap: also fast path
     else if (

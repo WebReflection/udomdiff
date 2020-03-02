@@ -46,6 +46,10 @@ module.exports = (parentNode, a, b, get, before) => {
     }
     // append head, tail, or nodes in between: fast path
     else if (aEnd === aStart) {
+      // we could be in a situation where the rest of nodes that
+      // need to be added are not at the end, and in such case
+      // the node to `insertBefore`, if the index is more than 0
+      // must be retrieved, otherwise it's gonna be the first item.
       const node = bEnd < bLength ?
         (bStart ?
           (get(b[bStart - 1], -0).nextSibling) :
@@ -73,9 +77,8 @@ module.exports = (parentNode, a, b, get, before) => {
       // if the node is unknown, just replace it with the new one
       else
         parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));
-      // move both indexes forward to finish the loop in the fast path
-      aStart++;
-      bStart++;
+      // break the loop, as this was the very last operation to perform
+      break;
     }
     // reverse swap: also fast path
     else if (

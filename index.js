@@ -47,6 +47,10 @@ var udomdiff = (function (exports) {
           bEnd--;
         } // append head, tail, or nodes in between: fast path
         else if (aEnd === aStart) {
+            // we could be in a situation where the rest of nodes that
+            // need to be added are not at the end, and in such case
+            // the node to `insertBefore`, if the index is more than 0
+            // must be retrieved, otherwise it's gonna be the first item.
             var node = bEnd < bLength ? bStart ? get(b[bStart - 1], -0).nextSibling : get(b[bEnd - bStart], 0) : before;
 
             while (bStart < bEnd) {
@@ -65,11 +69,10 @@ var udomdiff = (function (exports) {
                   // in the end or middle case, find out where to insert it
                   parentNode.insertBefore(get(b[bStart], 1), get(bEnd < bLength ? b[bEnd] : before, 0));
                 } // if the node is unknown, just replace it with the new one
-                else parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1)); // move both indexes forward to finish the loop in the fast path
+                else parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1)); // break the loop, as this was the very last operation to perform
 
 
-                aStart++;
-                bStart++;
+                break;
               } // reverse swap: also fast path
               else if (a[aStart] === b[bEnd - 1] && b[bStart] === a[aEnd - 1]) {
                   // this is a "shrink" operation that could happen in these cases:
