@@ -66,7 +66,7 @@ function test() {
     /^hr$/i.test(document.body.lastElementChild.tagName),
     '<hr> preserved'
   );
-  console.log('%cthousand nodes', 'font-weight:bold;');
+  log('%cthousand nodes', 'font-weight:bold;');
   futureState = udomdiff(
     document.body,
     futureState,
@@ -97,11 +97,11 @@ function test() {
   );
   console.timeEnd('random');
   function diff(text) {
-    console.log(`%c${text ? text : '""'}`, 'font-weight:bold;');
+    log('%c' + (text ? text : '""'), 'font-weight:bold;');
     futureState = udomdiff(
       document.body,
       futureState,
-      text.split('').map(c => nodes[c]),
+      text.split('').map(content, nodes),
       get,
       before
     );
@@ -109,9 +109,19 @@ function test() {
   }
 }
 
+var log = document.importNode.length === 1 ?
+  console.log :
+  function (info) {
+    console.log(info.slice(2));
+  };
+
+function content(c) {
+  return this[c];
+}
+
 function compare(text) {
   const body = document.body.textContent.replace(/\n/g, '');
-  console.assert(body === text, `expected: ${text} but it is ${body}`);
+  console.assert(body === text, 'expected: ' + text + ' but it is ' + body);
 }
 
 function get(node) {
