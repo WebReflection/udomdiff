@@ -16,25 +16,21 @@ class Dommy {
   }
   insertBefore(before, after) {
     this.operations++;
-    if (before !== after) {
-      this._removeChild(before);
-      this._childNodes.splice(
-        this._childNodes.indexOf(after),
-        0,
-        before
-      );
-    }
+    this._removeChild(before);
+    this._childNodes.splice(
+      this._childNodes.indexOf(after),
+      0,
+      before
+    );
   }
   replaceChild(newChild, oldChild) {
     this.operations++;
-    if (newChild !== oldChild) {
-      this._removeChild(newChild);
-      this._childNodes.splice(
-        this._childNodes.indexOf(oldChild),
-        1,
-        newChild
-      );
-    }
+    this._removeChild(newChild);
+    this._childNodes.splice(
+      this._childNodes.indexOf(oldChild),
+      1,
+      newChild
+    );
   }
   removeChild(child) {
     this.operations++;
@@ -164,6 +160,8 @@ clear(parent);
 console.assert(parent.childNodes.length === 0);
 //*/
 
+console.time('js-frameworks-benchmark');
+
 // actual benchmark
 parent.operations = 0;
 console.time('create 1000');
@@ -244,3 +242,5 @@ console.log('operations', parent.operations, '\n');
 parent.operations = 0;
 
 //*/
+
+console.timeEnd('js-frameworks-benchmark');
