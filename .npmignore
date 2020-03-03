@@ -3,4 +3,5 @@ node_modules/
 rollup/
 test/
 package-lock.json
+udomdiff-head.jpg
 .travis.yml
