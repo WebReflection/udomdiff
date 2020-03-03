@@ -62,6 +62,8 @@ function test() {
   diff('bdck');
   diff('ckbd');
   diff('');
+  diff('abcd');
+  diff('abdec');
   console.assert(
     /^hr$/i.test(document.body.lastElementChild.tagName),
     '<hr> preserved'

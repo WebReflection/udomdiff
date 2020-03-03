@@ -1,59 +1,6 @@
 const udomdiff = require('../cjs');
 
-const get = o => o;
-
-class Dommy {
-  constructor() {
-    this.lastElementChild = new Nody(this, '');
-    this.operations = 0;
-    this._childNodes = [this.lastElementChild];
-  }
-  get childNodes() {
-    return this._childNodes.slice(0, -1);
-  }
-  get textContent() {
-    return this._childNodes.map(node => node.value).join('');
-  }
-  insertBefore(before, after) {
-    this.operations++;
-    this._removeChild(before);
-    this._childNodes.splice(
-      this._childNodes.indexOf(after),
-      0,
-      before
-    );
-  }
-  replaceChild(newChild, oldChild) {
-    this.operations++;
-    this._removeChild(newChild);
-    this._childNodes.splice(
-      this._childNodes.indexOf(oldChild),
-      1,
-      newChild
-    );
-  }
-  removeChild(child) {
-    this.operations++;
-    this._removeChild(child);
-  }
-  _removeChild(child) {
-    var i = this._childNodes.indexOf(child);
-    if (-1 < i)
-      this._childNodes.splice(i, 1);
-  }
-}
-
-class Nody {
-  constructor(dommy, value) {
-    this.dommy = dommy;
-    this.value = value;
-  }
-  get nextSibling() {
-    return this.dommy.childNodes[
-      this.dommy.childNodes.indexOf(this) + 1
-    ] || this.dommy.lastElementChild;
-  }
-}
+const {Dommy, Nody, get} = require('./utils.js');
 
 let parent = new Dommy();
 
@@ -163,83 +110,83 @@ console.assert(parent.childNodes.length === 0);
 console.time('js-frameworks-benchmark');
 
 // actual benchmark
-parent.operations = 0;
+parent.reset();
 console.time('create 1000');
 var rows = create1000(parent);
 console.timeEnd('create 1000');
 console.assert(parent.childNodes.every((row, i) => row === rows[i]));
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 console.time('clear');
 var rows = clear(parent);
 console.timeEnd('clear');
 console.assert(parent.childNodes.every((row, i) => row === rows[i]) && rows.length === 0);
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 create1000(parent);
-parent.operations = 0;
+parent.reset();
 console.time('replace 1000');
 var rows = create1000(parent);
 console.timeEnd('replace 1000');
 console.assert(parent.childNodes.every((row, i) => row === rows[i]));
-console.log('operations', parent.operations, '\n');
+console.log('operations', parent.count(), '\n');
 clear(parent);
-parent.operations = 0;
+parent.reset();
 
 create1000(parent);
-parent.operations = 0;
+parent.reset();
 console.time('append 1000');
 var rows = append1000(parent);
 console.timeEnd('append 1000');
 console.assert(parent.childNodes.every((row, i) => row === rows[i]) && rows.length === 2000);
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 console.time('append more');
 var rows = append1000(parent);
 console.timeEnd('append more');
 console.assert(parent.childNodes.every((row, i) => row === rows[i]) && rows.length === 3000);
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 clear(parent);
 
 create1000(parent);
-parent.operations = 0;
+parent.reset();
 console.time('swap rows');
 swapRows(parent);
 console.timeEnd('swap rows');
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 create1000(parent);
-parent.operations = 0;
+parent.reset();
 console.time('update every 10th row');
 updateEach10thRow(parent);
 console.timeEnd('update every 10th row');
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 clear(parent);
-parent.operations = 0;
+parent.reset();
 console.time('create 10000 rows');
 create10000(parent);
 console.timeEnd('create 10000 rows');
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 console.time('swap over 10000 rows');
 swapRows(parent);
 console.timeEnd('swap over 10000 rows');
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 console.time('clear 10000');
 clear(parent);
 console.timeEnd('clear 10000');
-console.log('operations', parent.operations, '\n');
-parent.operations = 0;
+console.log('operations', parent.count(), '\n');
+parent.reset();
 
 //*/
 

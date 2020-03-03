@@ -77,10 +77,10 @@ var udomdiff = (function (exports) {
               else if (a[aStart] === b[bEnd - 1] && b[bStart] === a[aEnd - 1]) {
                   // this is a "shrink" operation that could happen in these cases:
                   // [1, 2, 3, 4, 5]
-                  // [1, 4, 3, 2]
+                  // [1, 4, 3, 2, 5]
                   // or asymmetric too
                   // [1, 2, 3, 4, 5]
-                  // [1, 2, 3, 5, 4, 6]
+                  // [1, 2, 3, 5, 6, 4]
                   var _node = get(a[--aEnd], -1).nextSibling;
                   parentNode.insertBefore(get(b[bStart++], 1), get(a[aStart++], -1).nextSibling);
                   parentNode.insertBefore(get(b[--bEnd], 1), _node); // mark the future index as identical (yeah, it's dirty, but cheap 👍)
