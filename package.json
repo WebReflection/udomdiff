@@ -1,6 +1,6 @@
 {
   "name": "udomdiff",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "An essential diffing algorithm for µhtml",
   "main": "cjs/index.js",
   "scripts": {
