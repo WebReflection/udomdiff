@@ -24,5 +24,8 @@ const value = node => node.value;
 
 let parent = new Dommy();
 
-diff([1, 2, 3, 4]);
-diff([1, 2, 4, 5, 3]);
+// diff([1, 2, 3, 4]);
+// diff([1, 2, 4, 5, 3]);
+
+diff([1, 2, 3]);
+diff([3, 1, 2]);

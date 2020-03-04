@@ -59,8 +59,12 @@ export default (parentNode, a, b, get, before) => {
     }
     // remove head or tail: fast path
     else if (bEnd === bStart) {
-      while (aStart < aEnd)
-        parentNode.removeChild(get(a[aStart++], -1));
+      while (aStart < aEnd) {
+        // remove the node only if it's unknown or not live
+        if (!map || !map.has(a[aStart]))
+          parentNode.removeChild(get(a[aStart], -1));
+        aStart++;
+      }
     }
     // single last swap: fast path
     else if ((aEnd - aStart) === 1 && (bEnd - bStart) === 1) {
