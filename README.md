@@ -1,4 +1,4 @@
-# µdomdiff
+# <em>µ</em>domdiff
 
 [![Build Status](https://travis-ci.com/WebReflection/udomdiff.svg?branch=master)](https://travis-ci.com/WebReflection/udomdiff) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/udomdiff/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/udomdiff?branch=master)
 
