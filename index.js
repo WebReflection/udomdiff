@@ -37,32 +37,32 @@ var udomdiff = (function (exports) {
     var map = null;
 
     while (aStart < aEnd || bStart < bEnd) {
-      // same node: fast path
-      if (a[aStart] === b[bStart]) {
-        aStart++;
-        bStart++;
-      } // same tail: fast path
-      else if (aEnd && bEnd && a[aEnd - 1] === b[bEnd - 1]) {
-          aEnd--;
-          bEnd--;
-        } // append head, tail, or nodes in between: fast path
-        else if (aEnd === aStart) {
-            // we could be in a situation where the rest of nodes that
-            // need to be added are not at the end, and in such case
-            // the node to `insertBefore`, if the index is more than 0
-            // must be retrieved, otherwise it's gonna be the first item.
-            var node = bEnd < bLength ? bStart ? get(b[bStart - 1], -0).nextSibling : get(b[bEnd - bStart], 0) : before;
+      // append head, tail, or nodes in between: fast path
+      if (aEnd === aStart) {
+        // we could be in a situation where the rest of nodes that
+        // need to be added are not at the end, and in such case
+        // the node to `insertBefore`, if the index is more than 0
+        // must be retrieved, otherwise it's gonna be the first item.
+        var node = bEnd < bLength ? bStart ? get(b[bStart - 1], -0).nextSibling : get(b[bEnd - bStart], 0) : before;
 
-            while (bStart < bEnd) {
-              parentNode.insertBefore(get(b[bStart++], 1), node);
-            }
-          } // remove head or tail: fast path
-          else if (bEnd === bStart) {
-              while (aStart < aEnd) {
-                // remove the node only if it's unknown or not live
-                if (!map || !map.has(a[aStart])) parentNode.removeChild(get(a[aStart], -1));
-                aStart++;
-              }
+        while (bStart < bEnd) {
+          parentNode.insertBefore(get(b[bStart++], 1), node);
+        }
+      } // remove head or tail: fast path
+      else if (bEnd === bStart) {
+          while (aStart < aEnd) {
+            // remove the node only if it's unknown or not live
+            if (!map || !map.has(a[aStart])) parentNode.removeChild(get(a[aStart], -1));
+            aStart++;
+          }
+        } // same node: fast path
+        else if (a[aStart] === b[bStart]) {
+            aStart++;
+            bStart++;
+          } // same tail: fast path
+          else if (a[aEnd - 1] === b[bEnd - 1]) {
+              aEnd--;
+              bEnd--;
             } // single last swap: fast path
             else if (aEnd - aStart === 1 && bEnd - bStart === 1) {
                 // we could be in a situation where the node was either unknown,

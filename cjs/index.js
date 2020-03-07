@@ -34,18 +34,8 @@ module.exports = (parentNode, a, b, get, before) => {
   let bStart = 0;
   let map = null;
   while (aStart < aEnd || bStart < bEnd) {
-    // same node: fast path
-    if (a[aStart] === b[bStart]) {
-      aStart++;
-      bStart++;
-    }
-    // same tail: fast path
-    else if (aEnd && bEnd && a[aEnd - 1] === b[bEnd - 1]) {
-      aEnd--;
-      bEnd--;
-    }
     // append head, tail, or nodes in between: fast path
-    else if (aEnd === aStart) {
+    if (aEnd === aStart) {
       // we could be in a situation where the rest of nodes that
       // need to be added are not at the end, and in such case
       // the node to `insertBefore`, if the index is more than 0
@@ -66,6 +56,16 @@ module.exports = (parentNode, a, b, get, before) => {
           parentNode.removeChild(get(a[aStart], -1));
         aStart++;
       }
+    }
+    // same node: fast path
+    else if (a[aStart] === b[bStart]) {
+      aStart++;
+      bStart++;
+    }
+    // same tail: fast path
+    else if (a[aEnd - 1] === b[bEnd - 1]) {
+      aEnd--;
+      bEnd--;
     }
     // single last swap: fast path
     else if ((aEnd - aStart) === 1 && (bEnd - bStart) === 1) {
