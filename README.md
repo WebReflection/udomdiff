@@ -36,6 +36,6 @@ If you don't care about any of those second arguments values, `const get = o => 
 ### How to import it:
 
   * via **CDN**, as global variable: `https://unpkg.com/udomdiff`
-  * via **ESM**, as external module: `https://unpkg.com/udomdiff/esm/index.js`
-  * via **CJS**: `const EventTarget = require('udomdiff').default;` <sup><sub>( or `require('udomdiff/cjs').default` )</sub></sup>
+  * via **ESM**, as external module: `import udomdiff from 'https://unpkg.com/udomdiff/esm/index.js'`
+  * via **CJS**: `const udomdiff = require('udomdiff');` <sup><sub>( or `require('udomdiff/cjs')` )</sub></sup>
   * via bundlers/transpilers: `import udomdiff from 'udomdiff';` <sup><sub>( or `from 'udomdiff/esm'` )</sub></sup>
