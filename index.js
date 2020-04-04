@@ -71,10 +71,10 @@ var udomdiff = (function (exports) {
                   // in the end or middle case, find out where to insert it
                   parentNode.insertBefore(get(b[bStart], 1), get(bEnd < bLength ? b[bEnd] : before, 0));
                 } // if the node is unknown, just replace it with the new one
-                else parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1)); // break the loop, as this was the very last operation to perform
+                else parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));
 
-
-                break;
+                aStart++;
+                bStart++;
               } // reverse swap: also fast path
               else if (a[aStart] === b[bEnd - 1] && b[bStart] === a[aEnd - 1]) {
                   // this is a "shrink" operation that could happen in these cases:
@@ -119,8 +119,7 @@ var udomdiff = (function (exports) {
 
                         var sequence = 1;
 
-                        while (++_i < aEnd && _i < bEnd) {
-                          if (!map.has(a[_i]) || map.get(a[_i]) !== index + sequence) break;
+                        while (++_i < aEnd && _i < bEnd && map.get(a[_i]) === index + sequence) {
                           sequence++;
                         } // effort decision here: if the sequence is longer than replaces
                         // needed to reach such sequence, which would brings again this loop
