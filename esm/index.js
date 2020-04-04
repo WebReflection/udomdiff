@@ -80,8 +80,8 @@ export default (parentNode, a, b, get, before) => {
       // if the node is unknown, just replace it with the new one
       else
         parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));
-      // break the loop, as this was the very last operation to perform
-      break;
+      aStart++;
+      bStart++;
     }
     // reverse swap: also fast path
     else if (
@@ -130,11 +130,8 @@ export default (parentNode, a, b, get, before) => {
           let i = aStart;
           // counts the amount of nodes that are the same in the future
           let sequence = 1;
-          while (++i < aEnd && i < bEnd) {
-            if (!map.has(a[i]) || map.get(a[i]) !== (index + sequence))
-              break;
+          while (++i < aEnd && i < bEnd && map.get(a[i]) === (index + sequence))
             sequence++;
-          }
           // effort decision here: if the sequence is longer than replaces
           // needed to reach such sequence, which would brings again this loop
           // to the fast path, prepend the difference before a sequence,
