@@ -45,7 +45,7 @@ class Dommy {
     // to preserve lastElementChild
     const index = this.childNodes.indexOf(node);
     if (-1 < index)
-      this.childNodes.splice(index, 1);
+      this._childNodes.splice(index, 1);
   }
 }
 
