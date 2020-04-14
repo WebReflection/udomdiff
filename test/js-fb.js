@@ -55,6 +55,26 @@ const create10000 = parent => {
   );
 };
 
+const reverseRows = parent => {
+  return udomdiff(
+    parent,
+    parent.childNodes,
+    parent.childNodes.slice().reverse(),
+    get,
+    parent.lastElementChild
+  );
+};
+
+const shuffleRows = parent => {
+  return udomdiff(
+    parent,
+    parent.childNodes,
+    parent.childNodes.slice().sort(() => Math.random() - Math.random()),
+    get,
+    parent.lastElementChild
+  );
+};
+
 const swapRows = parent => {
   const childNodes = parent.childNodes.slice();
   const $1 = childNodes[1];
@@ -165,6 +185,22 @@ parent.reset();
 console.time('update every 10th row');
 updateEach10thRow(parent);
 console.timeEnd('update every 10th row');
+console.log('operations', parent.count(), '\n');
+parent.reset();
+
+create1000(parent);
+parent.reset();
+console.time('shuffle rows');
+shuffleRows(parent);
+console.timeEnd('shuffle rows');
+console.log('operations', parent.count(), '\n');
+parent.reset();
+
+create1000(parent);
+parent.reset();
+console.time('reverse rows');
+reverseRows(parent);
+console.timeEnd('reverse rows');
 console.log('operations', parent.count(), '\n');
 parent.reset();
 
