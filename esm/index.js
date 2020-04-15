@@ -66,23 +66,8 @@ export default (parentNode, a, b, get, before) => {
       aEnd--;
       bEnd--;
     }
-    // single last swap: fast path
-    else if ((aEnd - aStart) === 1 && (bEnd - bStart) === 1) {
-      // we could be in a situation where the node was either unknown,
-      // be at the end of the future nodes list, or be in the middle
-      if (map && map.has(a[aStart])) {
-        // in the end or middle case, find out where to insert it
-        parentNode.insertBefore(
-          get(b[bStart], 1),
-          get(bEnd < bLength ? b[bEnd] : before, 0)
-        );
-      }
-      // if the node is unknown, just replace it with the new one
-      else
-        parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));
-      aStart++;
-      bStart++;
-    }
+    // The once here single last swap "fast path" has been removed in v1.1.0
+    // https://github.com/WebReflection/udomdiff/blob/single-final-swap/esm/index.js#L69-L85
     // reverse swap: also fast path
     else if (
       a[aStart] === b[bEnd - 1] &&
