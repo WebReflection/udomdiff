@@ -66,15 +66,7 @@ export default (parentNode, a, b, get, before) => {
       aEnd--;
       bEnd--;
     }
-    // TODO: this part is quite some code that performs slightly better
-    //       but changing a single raw via a remove + insertBefore doesn't
-    //       seem like a big issue, while code-size would go down to 414 bytes
-    //       if the whole block gets removed.
-    //       Find a way to test this part with both unknown elements and known
-    //       one, and see if there are either errors or performance is really
-    //       compromise 'cause a) I don't think so and b) I really would like
-    //       for this library to be the absolute smallest one!
-    //* single last swap: fast path
+    // single last swap: fast path
     else if ((aEnd - aStart) === 1 && (bEnd - bStart) === 1) {
       // we could be in a situation where the node was either unknown,
       // be at the end of the future nodes list, or be in the middle
@@ -91,7 +83,6 @@ export default (parentNode, a, b, get, before) => {
       aStart++;
       bStart++;
     }
-    //*/
     // reverse swap: also fast path
     else if (
       a[aStart] === b[bEnd - 1] &&
