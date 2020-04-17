@@ -12,6 +12,7 @@
     "fix:default": "sed -i 's/({})/({}).default/' index.js && sed -i 's/({})/({}).default/' new.js && sed -i 's/({})/({}).default/' min.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "nyc node test/index.js",
+    "bench": "node --expose-gc test/js-diff-benchmark.js",
     "size": "cat min.js | brotli | wc -c && cat new.js | brotli | wc -c"
   },
   "keywords": [
@@ -25,13 +26,18 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
+    "ansi-colors": "^4.1.1",
     "ascjs": "^3.1.2",
+    "cli-table": "^0.3.1",
     "coveralls": "^3.0.11",
+    "gzip-size": "^5.1.1",
+    "microtime": "^3.0.0",
     "nyc": "^15.0.1",
     "rollup": "^2.3.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.3.0",
+    "terser": "^4.6.11",
     "uglify-js": "^3.8.1"
   },
   "module": "esm/index.js",
