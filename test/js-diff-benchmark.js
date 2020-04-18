@@ -60,6 +60,7 @@ libs.forEach((lib, i) => {
   var gzip = gzipSize.sync(Terser.minify(code).code);
 
   // clean up the parent
+  // clean up the parent
   parent.textContent = '';
   if (before)
     parent.appendChild(before);
@@ -171,7 +172,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = create1000(parent, diff, childNodes);
-  stop(parent.operations.length, 1000);
+  stop(parent.mutations.length, 1000);
   console.assert(
     verifyNodes(parent, childNodes, 1000),
     '%s 1k',
@@ -180,7 +181,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = create1000(parent, diff, childNodes);
-  stop(parent.operations.length, 2000);
+  stop(parent.mutations.length, 2000);
   console.assert(
     verifyNodes(parent, childNodes, 1000),
     '%s replace',
@@ -189,7 +190,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = random(parent, diff, childNodes);
-  stop(parent.operations.length, 1000);
+  stop(parent.mutations.length, 2000);
   console.assert(
     verifyNodes(parent, childNodes, 1000),
     '%s random',
@@ -198,7 +199,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = reverse(parent, diff, childNodes);
-  stop(parent.operations.length, 1000);
+  stop(parent.mutations.length, 2000);
   console.assert(
     verifyNodes(parent, childNodes, 1000),
     '%s reverse',
@@ -207,7 +208,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = clear(parent, diff, childNodes);
-  stop(parent.operations.length, 1000);
+  stop(parent.mutations.length, 1000);
   console.assert(
     verifyNodes(parent, childNodes, 0),
     '%s clear',
@@ -218,7 +219,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = append1000(parent, diff, childNodes);
-  stop(parent.operations.length, 2000);
+  stop(parent.mutations.length, 2000);
   console.assert(
     verifyNodes(parent, childNodes, 2000),
     '%s append 1k',
@@ -227,7 +228,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = prepend1000(parent, diff, childNodes);
-  stop(parent.operations.length, 1000);
+  stop(parent.mutations.length, 1000);
   console.assert(
     verifyNodes(parent, childNodes, 3000),
     '%s prepend 1k',
@@ -239,7 +240,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = swapRows(parent, diff, childNodes);
-  stop(parent.operations.length, 2);
+  stop(parent.mutations.length, 4);
   console.assert(
     parent.childNodes[1].textContent == 998 &&
     parent.childNodes[998].textContent == 1 &&
@@ -250,7 +251,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = updateEach10thRow(parent, diff, childNodes);
-  stop(parent.operations.length, 200);
+  stop(parent.mutations.length, 200);
   console.assert(
     verifyNodes(parent, childNodes, 1000),
     '%s update 10th',
@@ -261,7 +262,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = create10000(parent, diff, childNodes);
-  stop(parent.operations.length, 10000);
+  stop(parent.mutations.length, 10000);
   console.assert(
     verifyNodes(parent, childNodes, 10000),
     '%s 10k',
@@ -270,7 +271,7 @@ libs.forEach((lib, i) => {
 
   start();
   childNodes = swapRows(parent, diff, childNodes);
-  stop(parent.operations.length, 2);
+  stop(parent.mutations.length, 4);
   console.assert(
     parent.childNodes[1].textContent == 9998 &&
     parent.childNodes[9998].textContent == 1 &&
@@ -317,36 +318,41 @@ function instrument(parent) {
     removeChild,
     replaceChild
   } = parent;
-  parent.operations = [];
+  parent.mutations = [];
   parent.appendChild = function (newNode) {
-    this.operations.push(`appendChild(${newNode.textContent})`);
+    const {textContent} = newNode;
+    if (newNode.parentNode)
+      this.mutations.push(`append: drop(${textContent})`);
+    this.mutations.push(`append: add(${textContent})`);
     return appendChild.call(this, newNode);
   };
   parent.insertBefore = function (newNode, oldNode) {
-    this.operations.push(
+    const {textContent} = newNode;
+    if (newNode.parentNode)
+      this.mutations.push(`insert: drop(${textContent})`);
+    this.mutations.push(
       oldNode ?
-        `insertBefore(${newNode.textContent}, ${oldNode.textContent})` :
-        `insertBefore(${newNode.textContent})`
+        `insert: put(${textContent}) before (${oldNode.textContent})` :
+        `insert: add(${textContent})`
     );
     return insertBefore.call(this, newNode, oldNode);
   };
   parent.removeChild = function (oldNode) {
-    this.operations.push(`removeChild(${oldNode.textContent})`);
+    this.mutations.push(`remove: drop(${oldNode.textContent})`);
     return removeChild.call(this, oldNode);
   };
   parent.replaceChild = function (newNode, oldNode) {
-    this.operations.push(
-      `delete#replaceChild(${newNode.textContent}, ${oldNode.textContent})`
-    );
-    this.operations.push(
-      `insert#replaceChild(${newNode.textContent}, ${oldNode.textContent})`
-    );
+    const {textContent} = newNode;
+    this.mutations.push(`replace: drop(${oldNode.textContent})`);
+    if (newNode.parentNode)
+      this.mutations.push(`replace: drop(${textContent})`);
+    this.mutations.push(`replace: put(${textContent})`);
     return replaceChild.call(this, newNode, oldNode);
   };
 }
 
 function reset(parent) {
-  parent.operations.splice(0);
+  parent.mutations.splice(0);
 }
 
 function round(num) {
