@@ -12,7 +12,7 @@
     "fix:default": "sed -i 's/({})/({}).default/' index.js && sed -i 's/({})/({}).default/' new.js && sed -i 's/({})/({}).default/' min.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "nyc node test/index.js",
-    "bench": "node --expose-gc test/js-diff-benchmark.js",
+    "benchmark": "node --expose-gc test/js-diff-benchmark.js",
     "size": "cat min.js | brotli | wc -c && cat new.js | brotli | wc -c"
   },
   "keywords": [

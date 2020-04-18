@@ -9,12 +9,14 @@ const document = require('./dommy.js');
 const get = o => o;
 
 const libs = [
-  'udomdiff'
+  'udomdiff w/out before',
+  'udomdiff with before'
 ];
 
 const cols = [
   '',
   '1k',
+  'Repl',
   'Shufle',
   'Invers',
   'Clear',
@@ -39,14 +41,17 @@ const table = new Table({
 let shuffleSeed;
 
 // in case we'd like to test "pinnability" of the differ
-let before = document.createTextNode('<!--pin-->');
-let parent = document.createElement('div');
+let before;
+
+const parent = document.createElement('div');
 instrument(parent);
 
-libs.forEach((lib) => {
+libs.forEach((lib, i) => {
+  if (i)
+    before = document.createTextNode('<!--pin-->');
 
   const libResults = [];
-  table.push({ [lib.slice(0, 8)]: libResults });
+  table.push({ [lib]: libResults });
 
   const file = `../cjs/index.js`;
   const diff = require(file);
@@ -61,7 +66,18 @@ libs.forEach((lib) => {
 
   //* warm up + checking everything works upfront
   let childNodes = create1000(parent, diff, []);
-  console.assert(verifyNodes(parent, childNodes, 1000), '%s warmup create', lib);
+  console.assert(
+    verifyNodes(parent, childNodes, 1000),
+    '%s warmup create',
+    lib
+  );
+
+  childNodes = create1000(parent, diff, childNodes);
+  console.assert(
+    verifyNodes(parent, childNodes, 1000),
+    '%s warmup replace',
+    lib
+  );
 
   if (!shuffleSeed) {
     // create a fixed shuffled seed so each library does the same.
@@ -136,19 +152,23 @@ libs.forEach((lib) => {
   const totalStart = microtime.now();
 
   let begin;
-  const start = () => (begin = microtime.now());
+  const start = () => {
+    reset(parent);
+    begin = microtime.now();
+  };
   const stop = (count, operationMax) => {
+    const end = microtime.now() - begin;
     const delta = count - operationMax;
-    libResults.push(`${round((microtime.now() - begin) / 1000)}ms
-${c.gray(count)}${
+    libResults.push(`${round(end / 1000)}ms
+    ${c.gray(count)}${
       count > operationMax
         ? (delta > 99 ? '\n' : ' ') + c.bgRed.black(`+${delta}`)
         : ''
-    }`);
+    }`.replace(/^\s+/m, ''));
   };
 
   // actual benchmark
-  reset(parent);
+
   start();
   childNodes = create1000(parent, diff, childNodes);
   stop(parent.operations.length, 1000);
@@ -157,7 +177,15 @@ ${c.gray(count)}${
     '%s 1k',
     lib
   );
-  reset(parent);
+
+  start();
+  childNodes = create1000(parent, diff, childNodes);
+  stop(parent.operations.length, 2000);
+  console.assert(
+    verifyNodes(parent, childNodes, 1000),
+    '%s replace',
+    lib
+  );
 
   start();
   childNodes = random(parent, diff, childNodes);
@@ -167,7 +195,6 @@ ${c.gray(count)}${
     '%s random',
     lib
   );
-  reset(parent);
 
   start();
   childNodes = reverse(parent, diff, childNodes);
@@ -177,7 +204,6 @@ ${c.gray(count)}${
     '%s reverse',
     lib
   );
-  reset(parent);
 
   start();
   childNodes = clear(parent, diff, childNodes);
@@ -187,17 +213,9 @@ ${c.gray(count)}${
     '%s clear',
     lib
   );
-  reset(parent);
 
   childNodes = create1000(parent, diff, childNodes);
-  reset(parent);
-  childNodes = create1000(parent, diff, childNodes);
-  console.assert(verifyNodes(parent, childNodes, 1000));
-  childNodes = clear(parent, diff, childNodes);
-  reset(parent);
 
-  childNodes = create1000(parent, diff, childNodes);
-  reset(parent);
   start();
   childNodes = append1000(parent, diff, childNodes);
   stop(parent.operations.length, 2000);
@@ -206,7 +224,6 @@ ${c.gray(count)}${
     '%s append 1k',
     lib
   );
-  reset(parent);
 
   start();
   childNodes = prepend1000(parent, diff, childNodes);
@@ -216,35 +233,51 @@ ${c.gray(count)}${
     '%s prepend 1k',
     lib
   );
-  reset(parent);
-  childNodes = clear(parent, diff, childNodes);
 
+  childNodes = clear(parent, diff, childNodes);
   childNodes = create1000(parent, diff, childNodes);
-  reset(parent);
+
   start();
   childNodes = swapRows(parent, diff, childNodes);
-  console.assert(verifyNodes(parent, childNodes, 1000));
   stop(parent.operations.length, 2);
-  reset(parent);
+  console.assert(
+    parent.childNodes[1].textContent == 998 &&
+    parent.childNodes[998].textContent == 1 &&
+    verifyNodes(parent, childNodes, 1000),
+    '%s swap2 1k',
+    lib
+  );
 
-  childNodes = create1000(parent, diff, childNodes);
-  reset(parent);
   start();
   childNodes = updateEach10thRow(parent, diff, childNodes);
   stop(parent.operations.length, 200);
-  reset(parent);
+  console.assert(
+    verifyNodes(parent, childNodes, 1000),
+    '%s update 10th',
+    lib
+  );
 
   childNodes = clear(parent, diff, childNodes);
-  reset(parent);
+
   start();
   childNodes = create10000(parent, diff, childNodes);
   stop(parent.operations.length, 10000);
-  reset(parent);
+  console.assert(
+    verifyNodes(parent, childNodes, 10000),
+    '%s 10k',
+    lib
+  );
 
   start();
   childNodes = swapRows(parent, diff, childNodes);
   stop(parent.operations.length, 2);
-  reset(parent);
+  console.assert(
+    parent.childNodes[1].textContent == 9998 &&
+    parent.childNodes[9998].textContent == 1 &&
+    verifyNodes(parent, childNodes, 10000),
+    '%s swap2 10k',
+    lib
+  );
 
   childNodes = clear(parent, diff, childNodes);
   reset(parent);
