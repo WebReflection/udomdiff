@@ -8,7 +8,7 @@
     "cjs": "ascjs --no-default esm cjs",
     "rollup:new": "rollup --config rollup/new.config.js",
     "rollup:babel": "rollup --config rollup/babel.config.js",
-    "min": "uglifyjs index.js --support-ie8 --comments=/^!/ -c -m -o min.js",
+    "min": "uglifyjs index.js -c -m -o min.js",
     "fix:default": "sed -i 's/({})/({}).default/' index.js && sed -i 's/({})/({}).default/' new.js && sed -i 's/({})/({}).default/' min.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test": "nyc node test/index.js",
