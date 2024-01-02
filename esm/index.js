@@ -44,15 +44,23 @@ export default (parentNode, a, b, get, before) => {
           (get(b[bStart - 1], -0).nextSibling) :
           get(b[bEnd - bStart], 0)) :
         before;
+      const nodes = [];
       while (bStart < bEnd)
-        parentNode.insertBefore(get(b[bStart++], 1), node);
+        nodes.push(get(b[bStart++], 1));
+      if (node) {
+        nodes.push(node);
+        node.replaceWith(...nodes);
+      }
+      else {
+        parentNode.append(...nodes);
+      }
     }
     // remove head or tail: fast path
     else if (bEnd === bStart) {
       while (aStart < aEnd) {
         // remove the node only if it's unknown or not live
         if (!map || !map.has(a[aStart]))
-          parentNode.removeChild(get(a[aStart], -1));
+          get(a[aStart], -1).remove();
         aStart++;
       }
     }
@@ -129,17 +137,17 @@ export default (parentNode, a, b, get, before) => {
           // will be processed at zero cost
           if (sequence > (index - bStart)) {
             const node = get(a[aStart], 0);
+            const nodes = [];
             while (bStart < index)
-              parentNode.insertBefore(get(b[bStart++], 1), node);
+              nodes.push(get(b[bStart++], 1));
+            nodes.push(node);
+            node.replaceWith(...nodes);
           }
           // if the effort wasn't good enough, fallback to a replace,
           // moving both source and target indexes forward, hoping that some
           // similar node will be found later on, to go back to the fast path
           else {
-            parentNode.replaceChild(
-              get(b[bStart++], 1),
-              get(a[aStart++], -1)
-            );
+            get(a[aStart++], -1).replaceWith(get(b[bStart++], 1));
           }
         }
         // otherwise move the source forward, 'cause there's nothing to do
@@ -149,8 +157,9 @@ export default (parentNode, a, b, get, before) => {
       // this node has no meaning in the future list, so it's more than safe
       // to remove it, and check the next live node out instead, meaning
       // that only the live list index should be forwarded
-      else
-        parentNode.removeChild(get(a[aStart++], -1));
+      else {
+        get(a[aStart++], -1).remove();
+      }
     }
   }
   return b;
