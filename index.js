@@ -40,10 +40,10 @@ var udomdiff = (function (exports) {
       if (aEnd === aStart) {
         // we could be in a situation where the rest of nodes that
         // need to be added are not at the end, and in such case
-        // the node to `insertBefore`, if the index is more than 0
+        // the node to `moveBefore`, if the index is more than 0
         // must be retrieved, otherwise it's gonna be the first item.
         var node = bEnd < bLength ? bStart ? get(b[bStart - 1], -0).nextSibling : get(b[bEnd - bStart], 0) : before;
-        while (bStart < bEnd) parentNode.insertBefore(get(b[bStart++], 1), node);
+        while (bStart < bEnd) parentNode.moveBefore(get(b[bStart++], 1), node);
       }
       // remove head or tail: fast path
       else if (bEnd === bStart) {
@@ -74,8 +74,8 @@ var udomdiff = (function (exports) {
         // [1, 2, 3, 4, 5]
         // [1, 2, 3, 5, 6, 4]
         var _node = get(a[--aEnd], -1).nextSibling;
-        parentNode.insertBefore(get(b[bStart++], 1), get(a[aStart++], -1).nextSibling);
-        parentNode.insertBefore(get(b[--bEnd], 1), _node);
+        parentNode.moveBefore(get(b[bStart++], 1), get(a[aStart++], -1).nextSibling);
+        parentNode.moveBefore(get(b[--bEnd], 1), _node);
         // mark the future index as identical (yeah, it's dirty, but cheap 👍)
         // The main reason to do this, is that when a[aEnd] will be reached,
         // the loop will likely be on the fast path, as identical to b[bEnd].
@@ -118,7 +118,7 @@ var udomdiff = (function (exports) {
             // will be processed at zero cost
             if (sequence > index - bStart) {
               var _node2 = get(a[aStart], 0);
-              while (bStart < index) parentNode.insertBefore(get(b[bStart++], 1), _node2);
+              while (bStart < index) parentNode.moveBefore(get(b[bStart++], 1), _node2);
             }
             // if the effort wasn't good enough, fallback to a replace,
             // moving both source and target indexes forward, hoping that some
