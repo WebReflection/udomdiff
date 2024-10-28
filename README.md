@@ -16,7 +16,7 @@ futureNodes = udomdiff(
   parentNode,           // where changes happen
   [...currentNodes],    // Array of current items/nodes
   [...futureNodes],     // Array of future items/nodes (returned)
-  get(node, toDoWhat),  // a callback to retrieve the node
+  get, // (node, toDoWhat) => node // a callback to retrieve the node
   before                // the anchored node to insertBefore
 );
 ```
@@ -30,7 +30,7 @@ You can find all info from [domdiff](https://github.com/WebReflection/domdiff#a-
   * `get(node, -0)` to get the node to use for an `insertAfter` operation
   * `get(node, -1)` to retrieve the node that's being removed
 
-If you don't care about any of those second arguments values, `const get = o => o;` is a valid get too.
+If you don't care about any of those second arguments values, `o => o;` is a valid `get` too.
 
 
 ### How to import it:
