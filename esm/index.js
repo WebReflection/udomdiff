@@ -42,7 +42,7 @@ export default (parentNode, a, b, get, before) => {
       const node = bEnd < bLength ?
         (bStart ?
           (get(b[bStart - 1], -0).nextSibling) :
-          get(b[bEnd - bStart], 0)) :
+          get(b[bEnd], 0)) :
         before;
       while (bStart < bEnd)
         parentNode.insertBefore(get(b[bStart++], 1), node);
