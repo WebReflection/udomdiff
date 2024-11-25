@@ -19,6 +19,10 @@ var udomdiff = (function (exports) {
    * PERFORMANCE OF THIS SOFTWARE.
    */
 
+  var moveBefore = function moveBefore(parentNode, isConnected, node, before) {
+    if (isConnected === node.isConnected) parentNode.moveBefore(node, before);else parentNode.insertBefore(node, before);
+  };
+
   /**
    * @param {Node} parentNode The container where children live
    * @param {Node[]} a The list of current/live children
@@ -29,6 +33,7 @@ var udomdiff = (function (exports) {
    * @returns {Node[]} The same list of future children.
    */
   var index = (function (parentNode, a, b, get, before) {
+    var isConnected = parentNode.isConnected;
     var bLength = b.length;
     var aEnd = a.length;
     var bEnd = bLength;
@@ -43,7 +48,7 @@ var udomdiff = (function (exports) {
         // the node to `insertBefore`, if the index is more than 0
         // must be retrieved, otherwise it's gonna be the first item.
         var node = bEnd < bLength ? bStart ? get(b[bStart - 1], -0).nextSibling : get(b[bEnd], 0) : before;
-        while (bStart < bEnd) parentNode.insertBefore(get(b[bStart++], 1), node);
+        while (bStart < bEnd) moveBefore(parentNode, isConnected, get(b[bStart++], 1), node);
       }
       // remove head or tail: fast path
       else if (bEnd === bStart) {
@@ -74,8 +79,9 @@ var udomdiff = (function (exports) {
         // [1, 2, 3, 4, 5]
         // [1, 2, 3, 5, 6, 4]
         var _node = get(a[--aEnd], -1).nextSibling;
-        parentNode.insertBefore(get(b[bStart++], 1), get(a[aStart++], -1).nextSibling);
-        parentNode.insertBefore(get(b[--bEnd], 1), _node);
+        moveBefore(parentNode, isConnected, get(b[bStart++], 1), get(a[aStart++], -1).nextSibling);
+        moveBefore(parentNode, isConnected, get(b[--bEnd], 1), _node);
+
         // mark the future index as identical (yeah, it's dirty, but cheap 👍)
         // The main reason to do this, is that when a[aEnd] will be reached,
         // the loop will likely be on the fast path, as identical to b[bEnd].
@@ -118,13 +124,15 @@ var udomdiff = (function (exports) {
             // will be processed at zero cost
             if (sequence > index - bStart) {
               var _node2 = get(a[aStart], 0);
-              while (bStart < index) parentNode.insertBefore(get(b[bStart++], 1), _node2);
+              while (bStart < index) moveBefore(parentNode, isConnected, get(b[bStart++], 1), _node2);
             }
             // if the effort wasn't good enough, fallback to a replace,
             // moving both source and target indexes forward, hoping that some
             // similar node will be found later on, to go back to the fast path
             else {
-              parentNode.replaceChild(get(b[bStart++], 1), get(a[aStart++], -1));
+              // TODO: this was a replaceChild but it's not clear if fragments
+              // work this way ... -1 seems also not appropriate
+              moveBefore(parentNode, isConnected, get(b[bStart++], 1), get(a[aStart++], 0));
             }
           }
           // otherwise move the source forward, 'cause there's nothing to do

@@ -1,6 +1,6 @@
 global.document = {
   createElement: function (tagName) {
-    return {tagName: tagName, value: '\n'};
+    return {tagName: tagName, value: '\n', isConnected: true};
   },
   createTextNode: function (value) {
     return Object.defineProperty(
@@ -14,6 +14,7 @@ global.document = {
   },
   importNode: function () {},
   body: {
+    isConnected: true,
     get lastElementChild() {
       return this.childNodes[this.childNodes.length - 1];
     },
@@ -26,6 +27,9 @@ global.document = {
       node.parentNode = this;
     },
     childNodes: [],
+    moveBefore: function (before, after) {
+      this.insertBefore(before, after);
+    },
     insertBefore: function (before, after) {
       if (before !== after) {
         this.removeChild(before);

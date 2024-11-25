@@ -28,6 +28,7 @@ const remove = node => {
 };
 
 class Siblings {
+  get isConnected() { return true }
   get nextSibling() {
     const {parentNode} = this;
     if (parentNode) {
@@ -86,6 +87,9 @@ class Dommy extends Siblings {
     this.childNodes.push(newNode);
     newNode.parentNode = this;
     return newNode;
+  }
+  moveBefore(newNode, oldNode) {
+    this.insertBefore(newNode, oldNode);
   }
   insertBefore(newNode, oldNode) {
     if (newNode !== oldNode) {
