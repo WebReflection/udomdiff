@@ -73,8 +73,8 @@ var udomdiff = (function (exports) {
         // or asymmetric too
         // [1, 2, 3, 4, 5]
         // [1, 2, 3, 5, 6, 4]
-        var _node = get(a[--aEnd], -1).nextSibling;
-        parentNode.insertBefore(get(b[bStart++], 1), get(a[aStart++], -1).nextSibling);
+        var _node = get(a[--aEnd], -0).nextSibling;
+        parentNode.insertBefore(get(b[bStart++], 1), get(a[aStart++], -0).nextSibling);
         parentNode.insertBefore(get(b[--bEnd], 1), _node);
         // mark the future index as identical (yeah, it's dirty, but cheap 👍)
         // The main reason to do this, is that when a[aEnd] will be reached,

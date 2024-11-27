@@ -79,10 +79,10 @@ export default (parentNode, a, b, get, before) => {
       // or asymmetric too
       // [1, 2, 3, 4, 5]
       // [1, 2, 3, 5, 6, 4]
-      const node = get(a[--aEnd], -1).nextSibling;
+      const node = get(a[--aEnd], -0).nextSibling;
       parentNode.insertBefore(
         get(b[bStart++], 1),
-        get(a[aStart++], -1).nextSibling
+        get(a[aStart++], -0).nextSibling
       );
       parentNode.insertBefore(get(b[--bEnd], 1), node);
       // mark the future index as identical (yeah, it's dirty, but cheap 👍)
