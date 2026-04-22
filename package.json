@@ -49,5 +49,8 @@
   "bugs": {
     "url": "https://github.com/WebReflection/udomdiff/issues"
   },
-  "homepage": "https://github.com/WebReflection/udomdiff#readme"
+  "homepage": "https://github.com/WebReflection/udomdiff#readme",
+  "dependencies": {
+    "custom-function": "^3.0.0"
+  }
 }
