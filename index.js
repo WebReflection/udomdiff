@@ -35,6 +35,13 @@ var udomdiff = (function (exports) {
     var aStart = 0;
     var bStart = 0;
     var map = null;
+    var moveBefore = parentNode.moveBefore;
+    var insert = moveBefore ? function (entry, ref) {
+      var node = get(entry, 1);
+      if (node.parentNode === parentNode) moveBefore.call(parentNode, node, ref);else parentNode.insertBefore(node, ref);
+    } : function (entry, ref) {
+      return parentNode.insertBefore(get(entry, 1), ref);
+    };
     while (aStart < aEnd || bStart < bEnd) {
       // append head, tail, or nodes in between: fast path
       if (aEnd === aStart) {
@@ -43,7 +50,7 @@ var udomdiff = (function (exports) {
         // the node to `insertBefore`, if the index is more than 0
         // must be retrieved, otherwise it's gonna be the first item.
         var node = bEnd < bLength ? bStart ? get(b[bStart - 1], -0).nextSibling : get(b[bEnd], 0) : before;
-        while (bStart < bEnd) parentNode.insertBefore(get(b[bStart++], 1), node);
+        while (bStart < bEnd) insert(b[bStart++], node);
       }
       // remove head or tail: fast path
       else if (bEnd === bStart) {
@@ -63,8 +70,18 @@ var udomdiff = (function (exports) {
         aEnd--;
         bEnd--;
       }
-      // The once here single last swap "fast path" has been removed in v1.1.0
-      // https://github.com/WebReflection/udomdiff/blob/single-final-swap/esm/index.js#L69-L85
+      // single last swap: fast path
+      else if (aEnd - aStart === 1 && bEnd - bStart === 1) {
+        if (map && map.has(a[aStart])) insert(b[bStart], get(bEnd < bLength ? b[bEnd] : before, 0));else parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));
+        aStart++;
+        bStart++;
+      }
+      // adjacent swap: fast path
+      else if (aEnd - aStart === 2 && bEnd - bStart === 2 && a[aStart] === b[bStart + 1] && a[aStart + 1] === b[bStart]) {
+        insert(b[bStart], get(a[aStart], 0));
+        aStart += 2;
+        bStart += 2;
+      }
       // reverse swap: also fast path
       else if (a[aStart] === b[bEnd - 1] && b[bStart] === a[aEnd - 1]) {
         // this is a "shrink" operation that could happen in these cases:
@@ -74,8 +91,8 @@ var udomdiff = (function (exports) {
         // [1, 2, 3, 4, 5]
         // [1, 2, 3, 5, 6, 4]
         var _node = get(a[--aEnd], -0).nextSibling;
-        parentNode.insertBefore(get(b[bStart++], 1), get(a[aStart++], -0).nextSibling);
-        parentNode.insertBefore(get(b[--bEnd], 1), _node);
+        insert(b[bStart++], get(a[aStart++], -0).nextSibling);
+        insert(b[--bEnd], _node);
         // mark the future index as identical (yeah, it's dirty, but cheap 👍)
         // The main reason to do this, is that when a[aEnd] will be reached,
         // the loop will likely be on the fast path, as identical to b[bEnd].
@@ -86,54 +103,25 @@ var udomdiff = (function (exports) {
       }
       // map based fallback, "slow" path
       else {
-        // the map requires an O(bEnd - bStart) operation once
-        // to store all future nodes indexes for later purposes.
-        // In the worst case scenario, this is a full O(N) cost,
-        // and such scenario happens at least when all nodes are different,
-        // but also if both first and last items of the lists are different
         if (!map) {
           map = new Map();
           var i = bStart;
           while (i < bEnd) map.set(b[i], i++);
         }
-        // if it's a future node, hence it needs some handling
         if (map.has(a[aStart])) {
-          // grab the index of such node, 'cause it might have been processed
           var index = map.get(a[aStart]);
-          // if it's not already processed, look on demand for the next LCS
           if (bStart < index && index < bEnd) {
             var _i = aStart;
-            // counts the amount of nodes that are the same in the future
             var sequence = 1;
             while (++_i < aEnd && _i < bEnd && map.get(a[_i]) === index + sequence) sequence++;
-            // effort decision here: if the sequence is longer than replaces
-            // needed to reach such sequence, which would brings again this loop
-            // to the fast path, prepend the difference before a sequence,
-            // and move only the future list index forward, so that aStart
-            // and bStart will be aligned again, hence on the fast path.
-            // An example considering aStart and bStart are both 0:
-            // a: [1, 2, 3, 4]
-            // b: [7, 1, 2, 3, 6]
-            // this would place 7 before 1 and, from that time on, 1, 2, and 3
-            // will be processed at zero cost
             if (sequence > index - bStart) {
               var _node2 = get(a[aStart], 0);
-              while (bStart < index) parentNode.insertBefore(get(b[bStart++], 1), _node2);
-            }
-            // if the effort wasn't good enough, fallback to a replace,
-            // moving both source and target indexes forward, hoping that some
-            // similar node will be found later on, to go back to the fast path
-            else {
+              while (bStart < index) insert(b[bStart++], _node2);
+            } else {
               parentNode.replaceChild(get(b[bStart++], 1), get(a[aStart++], -1));
             }
-          }
-          // otherwise move the source forward, 'cause there's nothing to do
-          else aStart++;
-        }
-        // this node has no meaning in the future list, so it's more than safe
-        // to remove it, and check the next live node out instead, meaning
-        // that only the live list index should be forwarded
-        else parentNode.removeChild(get(a[aStart++], -1));
+          } else aStart++;
+        } else parentNode.removeChild(get(a[aStart++], -1));
       }
     }
     return b;
@@ -145,4 +133,4 @@ var udomdiff = (function (exports) {
 
   return exports;
 
-})({}).default;
+})({});
